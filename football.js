@@ -5,8 +5,6 @@ const apiURL =
 //   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions/PL/standings";
 //   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/persons/99813/matches";
 
-let data;
-
 async function football() {
   const { data } = await axios.get(apiURL, {
     headers: {
