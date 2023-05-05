@@ -7,7 +7,7 @@ const apiURL =
 
 let apiData;
 
-async function football() {
+async function getData() {
   const { data } = await axios.get(apiURL, {
     headers: {
       "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
@@ -16,12 +16,22 @@ async function football() {
   });
   console.log(data);
   apiData = data;
-  return data;
+
+  setAvailableTeams();
 }
 
-football();
+getData();
 
-const dropdownList = document.getElementById("football-team");
+const setAvailableTeams = () => {
+  for (const property in apiData.teams.name) {
+    const option = document.createElement("option");
+    option.value = property;
+    option.text = property;
+    footballTeam.add(option);
+  }
+};
+
+const dropdownList = document.getElementById("footballTeam");
 const selectedTeam = dropdownList.value;
 console.log(selectedTeam);
 
@@ -29,10 +39,6 @@ dropdownList.onchange = (e) => {
   const selectedTeam = dropdownList.value;
   console.log(selectedTeam);
   console.log(apiData);
-  // const filterTest = apiData.list.map((item) => {
-  //   return item.teams[0].name;
-  // });
-  // console.log(filterTest);
 
   const filteredData = apiData.teams.find((team) =>
     team.name.includes(selectedTeam)
