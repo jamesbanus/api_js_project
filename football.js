@@ -23,11 +23,12 @@ async function getData() {
 getData();
 
 const setAvailableTeams = () => {
-  for (const property in apiData.teams.name) {
+  for (const property of apiData.teams) {
     const option = document.createElement("option");
-    option.value = property;
-    option.text = property;
+    option.value = property.name;
+    option.text = property.name;
     footballTeam.add(option);
+    console.log(property);
   }
 };
 
@@ -38,10 +39,14 @@ console.log(selectedTeam);
 dropdownList.onchange = (e) => {
   const selectedTeam = dropdownList.value;
   console.log(selectedTeam);
-  console.log(apiData);
 
   const filteredData = apiData.teams.find((team) =>
     team.name.includes(selectedTeam)
   );
   console.log(filteredData);
+  const colour = filteredData.clubColors;
+  console.log(colour);
+  document.getElementById("header").innerHTML = selectedTeam + " Squad";
+  document.getElementById("h1").style.color = "Blue";
+  document.getElementById("header").style.backgroundColor = "Red";
 };
