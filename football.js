@@ -77,6 +77,9 @@ console.log(selectedTeam);
 dropdownList.onchange = (e) => {
   if (selectedTeam != "select") {
     removeElement("GoalkeepersInner");
+    removeElement("DefendersInner");
+    removeElement("MidfieldersInner");
+    removeElement("ForwardsInner");
   }
 
   selectedTeam = dropdownList.value;
@@ -103,9 +106,9 @@ dropdownList.onchange = (e) => {
   document.getElementById("midHeader").textContent = "Midfielders";
   document.getElementById("fwdHeader").textContent = "Forwards";
 
-  const newDiv = document.createElement("div");
-  document.getElementById("Goalkeepers").appendChild(newDiv);
-  newDiv.setAttribute("id", "GoalkeepersInner");
+  // const newDiv = document.createElement("div");
+  // document.getElementById("Goalkeepers").appendChild(newDiv);
+  // newDiv.setAttribute("id", "GoalkeepersInner");
 
   // for (const property of gk) {
   //   const node = document.createElement("div");

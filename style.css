@@ -24,6 +24,9 @@ body {
   -moz-column-gap: 5px;
        column-gap: 5px;
   row-gap: 5px;
+  justify-content: center;
+  align-items: center;
+  grid-auto-rows: 40px;
 }
 #content #DefendersInner {
   display: grid;
@@ -32,6 +35,9 @@ body {
   -moz-column-gap: 5px;
        column-gap: 5px;
   row-gap: 5px;
+  justify-content: center;
+  align-items: center;
+  grid-auto-rows: 40px;
 }
 #content #MidfieldersInner {
   display: grid;
@@ -40,6 +46,9 @@ body {
   -moz-column-gap: 5px;
        column-gap: 5px;
   row-gap: 5px;
+  justify-content: center;
+  align-items: center;
+  grid-auto-rows: 40px;
 }
 #content #ForwardsInner {
   display: grid;
@@ -48,4 +57,7 @@ body {
   -moz-column-gap: 5px;
        column-gap: 5px;
   row-gap: 5px;
+  justify-content: center;
+  align-items: center;
+  grid-auto-rows: 40px;
 }/*# sourceMappingURL=style.css.map */
