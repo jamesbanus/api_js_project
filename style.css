@@ -1,6 +1,5 @@
-body {
-  background-color: royalblue / white;
-  color: royalblue / white;
-}
-
-/*# sourceMappingURL=style.css.map */
+#header {
+  width: 100%;
+  border-style: solid;
+  border-radius: 5px;
+}/*# sourceMappingURL=style.css.map */

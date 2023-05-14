@@ -7,18 +7,35 @@ const apiURL =
 
 let apiData;
 
-async function getData() {
-  const { data } = await axios.get(apiURL, {
-    headers: {
-      "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
-      Origin: "X-Requested-With",
-    },
-  });
-  console.log(data);
-  apiData = data;
+const getData = async () => {
+  try {
+    const { data } = await axios.get(apiURL, {
+      headers: {
+        "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
+        Origin: "X-Requested-With",
+      },
+    });
+    console.log(data);
+    apiData = data;
 
-  setAvailableTeams();
-}
+    setAvailableTeams();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// async function getData() {
+//   const { data } = await axios.get(apiURL, {
+//     headers: {
+//       "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
+//       Origin: "X-Requested-With",
+//     },
+//   });
+//   console.log(data);
+//   apiData = data;
+
+//   setAvailableTeams();
+// }
 
 getData();
 
@@ -44,9 +61,16 @@ dropdownList.onchange = (e) => {
     team.name.includes(selectedTeam)
   );
   console.log(filteredData);
-  const colour = filteredData.clubColors;
-  console.log(colour);
+  const colourCombo = filteredData.clubColors;
+  console.log(colourCombo);
+  const colours = colourCombo.split(" / ");
+  let colour1 = colours[0];
+  let colour2 = colours[1];
+  colour1 = colour1.replace(/\s+/g, "");
+  colour2 = colour2.replace(/\s+/g, "");
+  console.log(colour1);
+  console.log(colour2);
   document.getElementById("header").innerHTML = selectedTeam + " Squad";
-  document.getElementById("h1").style.color = "Blue";
-  document.getElementById("header").style.backgroundColor = "Red";
+  document.getElementById("header").style.color = colour1;
+  document.getElementById("header").style.backgroundColor = colour2;
 };
