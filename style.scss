@@ -2,11 +2,23 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   text-align: center;
-  column-gap: 5px;
-  row-gap: 5px;
+  column-gap: 10px;
+  row-gap: 15px;
   justify-content: center;
   align-items: center;
   grid-auto-rows: 40px;
+}
+
+@mixin divRules {
+  height: 100%;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: thin;
+  border-top-width: 5px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
 }
 
 body {
@@ -31,14 +43,38 @@ body {
 
   #GoalkeepersInner {
     @include gridrules();
+    div {
+      @include divRules();
+      p {
+        margin: 0px;
+      }
+    }
   }
   #DefendersInner {
     @include gridrules();
+    div {
+      @include divRules();
+      p {
+        margin: 0px;
+      }
+    }
   }
   #MidfieldersInner {
     @include gridrules();
+    div {
+      @include divRules();
+      p {
+        margin: 0px;
+      }
+    }
   }
   #ForwardsInner {
     @include gridrules();
+    div {
+      @include divRules();
+      p {
+        margin: 0px;
+      }
+    }
   }
 }

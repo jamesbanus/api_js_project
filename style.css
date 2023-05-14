@@ -21,43 +21,99 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   text-align: center;
-  -moz-column-gap: 5px;
-       column-gap: 5px;
-  row-gap: 5px;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+  row-gap: 15px;
   justify-content: center;
   align-items: center;
   grid-auto-rows: 40px;
+}
+#content #GoalkeepersInner div {
+  height: 100%;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: thin;
+  border-top-width: 5px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+#content #GoalkeepersInner div p {
+  margin: 0px;
 }
 #content #DefendersInner {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   text-align: center;
-  -moz-column-gap: 5px;
-       column-gap: 5px;
-  row-gap: 5px;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+  row-gap: 15px;
   justify-content: center;
   align-items: center;
   grid-auto-rows: 40px;
+}
+#content #DefendersInner div {
+  height: 100%;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: thin;
+  border-top-width: 5px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+#content #DefendersInner div p {
+  margin: 0px;
 }
 #content #MidfieldersInner {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   text-align: center;
-  -moz-column-gap: 5px;
-       column-gap: 5px;
-  row-gap: 5px;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+  row-gap: 15px;
   justify-content: center;
   align-items: center;
   grid-auto-rows: 40px;
+}
+#content #MidfieldersInner div {
+  height: 100%;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: thin;
+  border-top-width: 5px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+#content #MidfieldersInner div p {
+  margin: 0px;
 }
 #content #ForwardsInner {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   text-align: center;
-  -moz-column-gap: 5px;
-       column-gap: 5px;
-  row-gap: 5px;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+  row-gap: 15px;
   justify-content: center;
   align-items: center;
   grid-auto-rows: 40px;
+}
+#content #ForwardsInner div {
+  height: 100%;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: thin;
+  border-top-width: 5px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+#content #ForwardsInner div p {
+  margin: 0px;
 }/*# sourceMappingURL=style.css.map */

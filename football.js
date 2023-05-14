@@ -5,6 +5,8 @@ const apiURL =
 //   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions/PL/standings";
 //   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/persons/99813/matches";
 
+const locationApiURL = "https://api.postcodes.io/postcodes/";
+
 let apiData;
 let filteredData;
 let selectedTeam;
@@ -13,6 +15,35 @@ let gk;
 let def;
 let mid;
 let fwd;
+let colour1;
+let colour2;
+let locData;
+let postcodeArray = [];
+let userLat;
+let userLong;
+
+const options = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 0,
+};
+
+function success(pos) {
+  const crd = pos.coords;
+
+  console.log("Your current position is:");
+  console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`More or less ${crd.accuracy} meters.`);
+  userLat = crd.latitude;
+  userLong = crd.longitude;
+}
+
+function error(err) {
+  console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+navigator.geolocation.getCurrentPosition(success, error, options);
 
 const getData = async () => {
   try {
@@ -26,12 +57,23 @@ const getData = async () => {
     apiData = data;
 
     setAvailableTeams();
+    getPostCode();
   } catch (e) {
     console.log(e);
   }
 };
 
 getData();
+
+const getPostcodeData = async (clubPostcode) => {
+  try {
+    const { data } = await axios.get(locationApiURL + clubPostcode, {});
+    console.log(data);
+    locData = data;
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 const setAvailableTeams = () => {
   for (const property of apiData.teams) {
@@ -63,11 +105,32 @@ const squadbuilder = (pos, id, parent) => {
   document.getElementById(parent).appendChild(newDiv);
   newDiv.setAttribute("id", id);
   for (const property of pos) {
-    const node = document.createElement("div");
+    const newInnerDiv = document.createElement("div");
+    const node = document.createElement("p");
     const textnode = document.createTextNode(property.name);
     node.appendChild(textnode);
-    document.getElementById(id).appendChild(node);
+    document.getElementById(id).appendChild(newInnerDiv);
+    newInnerDiv.appendChild(node);
+    if (colour1 === "White") {
+      newInnerDiv.style.borderTopColor = colour2;
+    } else {
+      newInnerDiv.style.borderTopColor = colour1;
+    }
   }
+};
+
+const getPostCode = () => {
+  for (const property of apiData.teams) {
+    const address = property.address;
+    const arr = address.split(" ");
+    let postcode = arr.slice(Math.max(arr.length - 2, 1));
+    postcode = postcode.toString();
+    postcode = postcode.replace(",", "");
+    postcodeArray.push(postcode);
+    console.log(postcode);
+    getPostcodeData(postcode);
+  }
+  console.log(postcodeArray);
 };
 
 const dropdownList = document.getElementById("footballTeam");
@@ -93,31 +156,30 @@ dropdownList.onchange = (e) => {
 
   const colourCombo = filteredData.clubColors;
   const colours = colourCombo.split(" / ");
-  let colour1 = colours[0];
-  let colour2 = colours[1];
+  colour1 = colours[0];
+  colour2 = colours[1];
   colour1 = colour1.replace(/\s+/g, "");
   colour2 = colour2.replace(/\s+/g, "");
+
   document.getElementById("header").innerHTML = selectedTeam + " Squad";
-  document.getElementById("header").style.color = colour1;
-  document.getElementById("header").style.backgroundColor = colour2;
+
+  if (colour1 === "White") {
+    document.getElementById("header").style.color = colour2;
+    document.getElementById("header").style.backgroundColor = colour1;
+  } else {
+    document.getElementById("header").style.color = colour1;
+    document.getElementById("header").style.backgroundColor = colour2;
+  }
 
   document.getElementById("gkHeader").textContent = "Goalkeepers";
   document.getElementById("defHeader").textContent = "Defenders";
   document.getElementById("midHeader").textContent = "Midfielders";
   document.getElementById("fwdHeader").textContent = "Forwards";
 
-  // const newDiv = document.createElement("div");
-  // document.getElementById("Goalkeepers").appendChild(newDiv);
-  // newDiv.setAttribute("id", "GoalkeepersInner");
-
-  // for (const property of gk) {
-  //   const node = document.createElement("div");
-  //   const textnode = document.createTextNode(property.name);
-  //   node.appendChild(textnode);
-  //   document.getElementById("GoalkeepersInner").appendChild(node);
-  // }
   squadbuilder(gk, "GoalkeepersInner", "Goalkeepers");
   squadbuilder(def, "DefendersInner", "Defenders");
   squadbuilder(mid, "MidfieldersInner", "Midfielders");
   squadbuilder(fwd, "ForwardsInner", "Forwards");
 };
+
+// getPostcodeData();
