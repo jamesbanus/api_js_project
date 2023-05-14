@@ -1,5 +1,51 @@
+body {
+  width: 95%;
+  margin: auto;
+}
+
 #header {
-  width: 100%;
   border-style: solid;
   border-radius: 5px;
+  margin: 10px 10px 10px 10px;
+  text-align: center;
+}
+
+.form-group {
+  margin: 10px 10px 10px 10px;
+}
+
+#content {
+  margin: 10px 10px 10px 10px;
+}
+#content #GoalkeepersInner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: center;
+  -moz-column-gap: 5px;
+       column-gap: 5px;
+  row-gap: 5px;
+}
+#content #DefendersInner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: center;
+  -moz-column-gap: 5px;
+       column-gap: 5px;
+  row-gap: 5px;
+}
+#content #MidfieldersInner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: center;
+  -moz-column-gap: 5px;
+       column-gap: 5px;
+  row-gap: 5px;
+}
+#content #ForwardsInner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: center;
+  -moz-column-gap: 5px;
+       column-gap: 5px;
+  row-gap: 5px;
 }/*# sourceMappingURL=style.css.map */
