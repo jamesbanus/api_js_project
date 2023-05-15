@@ -2,8 +2,7 @@
 // Team data
 
 const apiURL =
-  //   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions/PL/teams";
-  "https://api.football-data.org/v4/competitions/PL/team";
+  "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions/PL/teams";
 
 // Postcode data for getting long/lat
 const locationApiURL = "https://api.postcodes.io/postcodes/";
