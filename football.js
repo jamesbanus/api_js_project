@@ -1,163 +1,112 @@
-// API URLS needed to consume data
-// Team data
-const apiURL =
-  //   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/teams/57";
-  "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions/PL/teams";
-//   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/teams/57/matches";
-//   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions/PL/standings";
-//   "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/persons/99813/matches";
-
-// Postcode data for getting long/lat
-const locationApiURL = "https://api.postcodes.io/postcodes/";
-
 // Global variables
 
-let apiData;
 let filteredData;
 let selectedTeam;
-let teamData;
 let gk;
 let def;
 let mid;
 let fwd;
 let colour1;
 let colour2;
-let locData;
-let distanceArray = [];
-let postCodeArray = [];
-let userLat;
-let userLong;
-let clubLat;
-let clubLong;
-let hasLocation = false;
-let hasFootballData = false;
-let dist;
-let postcode;
+let displayText;
+let closestClubName;
 
 // Get user geolocation and store longitude and latitde
 
-const options = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0,
-};
-
-function success(pos) {
-  const crd = pos.coords;
-
-  console.log("Your current position is:");
-  console.log(`Latitude : ${crd.latitude}`);
-  console.log(`Longitude: ${crd.longitude}`);
-  console.log(`More or less ${crd.accuracy} meters.`);
-  userLat = crd.latitude;
-  userLong = crd.longitude;
-  hasLocation = true;
-}
-
-function error(err) {
-  console.warn(`ERROR(${err.code}): ${err.message}`);
-}
+import {
+  options,
+  success,
+  error,
+  hasLocation,
+  getData,
+  apiData,
+  hasFootballData,
+  getClubPostCode,
+  distanceArray,
+  postCodeArray,
+  setAvailableTeams,
+  removeElement,
+} from "./utils.js";
 
 navigator.geolocation.getCurrentPosition(success, error, options);
 
 // Get team data from football api and then set the available teams for dropdown and grab long/lat from the postcodes of the teams
 
-const getData = async () => {
-  try {
-    const { data } = await axios.get(apiURL, {
-      headers: {
-        "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
-        Origin: "X-Requested-With",
-      },
-    });
-    console.log(data);
-    apiData = data;
-    hasFootballData = true;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 getData();
 
-const checkHasInterval = setInterval(() => {
-  if (hasLocation === true && hasFootballData === true) {
+// check we have football data before running setAvailableTeams()
+
+const checkHasFootballInterval = setInterval(() => {
+  if (hasFootballData === true) {
     setAvailableTeams();
-    getPostCode();
-    clearInterval(checkHasInterval);
+    clearInterval(checkHasFootballInterval);
   }
 }, 100);
 
-// function that returns only the postcode from each clubs address, and then returns the postcode data associated with each club using GetPostcodeData()
+//  check we have location data before running getClubPostCode()
 
-const getPostCode = () => {
-  for (const property of apiData.teams) {
-    const address = property.address;
-    const arr = address.split(" ");
-    postcode = arr.slice(Math.max(arr.length - 2, 1));
-    postcode = postcode.toString();
-    postcode = postcode.replace(",", "");
-    getPostcodeData(postcode);
+const checkHasLocInterval = setInterval(() => {
+  if (hasLocation === true) {
+    getClubPostCode();
+    clearInterval(checkHasLocInterval);
   }
-  console.log(distanceArray, postCodeArray);
+}, 100);
 
-  const checkArrinterval = setInterval(() => {
-    if (distanceArray.length === 20) {
-      const shortestDist = Math.min(...distanceArray);
-      console.log(shortestDist);
-      const indexOfDist = distanceArray.indexOf(shortestDist);
-      console.log(indexOfDist);
-      console.log(postCodeArray[indexOfDist]);
-      clearInterval(checkArrinterval);
-    }
-  }, 100);
-};
+// Display a different message depending on the status of the geolocation and whether the name of the club has been returned
 
-// Get long/lat for each club from location api using club postcode
-
-const getPostcodeData = async (clubPostcode) => {
-  try {
-    const { data } = await axios.get(locationApiURL + clubPostcode, {});
-    locData = data;
-    clubLat = locData.result.latitude;
-    clubLong = locData.result.longitude;
-    dist = getDistanceFromLatLonInKm(userLat, userLong, clubLat, clubLong);
-    distanceArray.push(dist);
-    postCodeArray.push(clubPostcode);
-  } catch (e) {
-    console.log(e);
+const checkHasLocalClub = setInterval(() => {
+  if (hasLocation === false) {
+    displayText = "Please allow location services to see this feature";
+  } else if (closestClubName === undefined && hasLocation === true) {
+    displayText = "Loading";
+  } else {
+    displayText =
+      "Based on your location, your nearest club is " + closestClubName;
+    clearInterval(checkHasLocalClub);
   }
-};
+  document.getElementById("userClubText").textContent = displayText;
+}, 100);
 
-// function that creates a dropdown list in the html for all the teams in the api
+//  Check the array of distances between user and clubs is 20 (the amount of clubs there are). If so:
+// 1. return shortest distance
+// 2. Find the index of that distance
+// 3. Find the corresponding postcode by searching the postCode Array for that index
+// 4. Take the last 3 characters of the postcode (uniform for all teams)
+// 5. search the api data for the club with the last 3 characters of that post code
+// 6. Return the club name and clear interval
 
-const setAvailableTeams = () => {
-  for (const property of apiData.teams) {
-    const option = document.createElement("option");
-    option.value = property.name;
-    option.text = property.name;
-    footballTeam.add(option);
+const checkArrInterval = setInterval(() => {
+  if (distanceArray.length === 20) {
+    const shortestDist = Math.min(...distanceArray);
+    const indexOfDist = distanceArray.indexOf(shortestDist);
+    const closestClubPostCode = postCodeArray[indexOfDist];
+    const last3 = closestClubPostCode.slice(-3);
+    const closestClubInfo = apiData.teams.find((postcode) =>
+      postcode.address.includes(last3)
+    );
+    closestClubName = closestClubInfo.name;
+    clearInterval(checkArrInterval);
   }
-};
+}, 100);
 
-// function that filters the data to find only the team the user selects from the dropdown
+// // function that filters the data to find only the team the user selects from the dropdown
 
-const setTeam = () => {
+const filterTeam = () => {
   filteredData = apiData.teams.find((team) => team.name.includes(selectedTeam));
 };
 
-// function that filters the selected team by position
+// // function that filters the selected team by position
 
-const setSquad = () => {
+const getSquad = () => {
   gk = filteredData.squad.filter((gks) => gks.position.includes("Goalkeeper"));
   def = filteredData.squad.filter((defs) => defs.position.includes("Defence"));
   mid = filteredData.squad.filter((mids) => mids.position.includes("Midfield"));
   fwd = filteredData.squad.filter((fwds) => fwds.position.includes("Offence"));
 };
 
-// function that extracts the colour combination for each club and stores them separately
+// // function that extracts the colour combination for each club and stores them separately
 
-const setColour = () => {
+const getClubColours = () => {
   const colourCombo = filteredData.clubColors;
   const colours = colourCombo.split(" / ");
   colour1 = colours[0];
@@ -166,12 +115,12 @@ const setColour = () => {
   colour2 = colour2.replace(/\s+/g, "");
 };
 
-// function that removed elements inserted into the DOM (to refresh data)
+// // function that removed elements inserted into the DOM (to refresh data)
 
-function removeElement(id) {
-  var elem = document.getElementById(id);
-  return elem.parentNode.removeChild(elem);
-}
+// function removeElement(id) {
+//   var elem = document.getElementById(id);
+//   return elem.parentNode.removeChild(elem);
+// }
 
 // function that builds the squad.
 // 1. Create empty div and make it a child of the relevant positional div
@@ -197,30 +146,9 @@ const squadbuilder = (pos, id, parent) => {
   }
 };
 
-// function that calculates distance between 2 points using long/lat
-
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of the earth in km
-  const dLat = deg2rad(lat2 - lat1); // deg2rad below
-  const dLon = deg2rad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const d = R * c; // Distance in km
-  return d;
-}
-
-function deg2rad(deg) {
-  return deg * (Math.PI / 180);
-}
-
 // Get initial value from dropdown list (should be 'select')
 
-const dropdownList = document.getElementById("footballTeam");
+let dropdownList = document.getElementById("footballTeam");
 selectedTeam = dropdownList.value;
 console.log(selectedTeam);
 
@@ -244,12 +172,11 @@ dropdownList.onchange = (e) => {
 
   selectedTeam = dropdownList.value;
 
-  setTeam();
-  console.log(filteredData);
+  filterTeam();
 
-  setSquad();
+  getSquad();
 
-  setColour();
+  getClubColours();
 
   document.getElementById("header").innerHTML = selectedTeam + " Squad";
 
