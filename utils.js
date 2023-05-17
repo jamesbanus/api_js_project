@@ -2,8 +2,7 @@
 // Team data
 
 const apiURL =
-  "https://api.football-data.org/v4/competitions/PL/teams";
-// https://cors-anywhere.herokuapp.com/
+  "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions/PL/teams";
 
 // Postcode data for getting long/lat
 const locationApiURL = "https://api.postcodes.io/postcodes/";
@@ -49,7 +48,7 @@ export const getData = async () => {
     const { data } = await axios.get(apiURL, {
       headers: {
         "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
-//         Origin: "X-Requested-With",
+        Origin: "X-Requested-With",
       },
     });
     console.log(data);
