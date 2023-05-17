@@ -47,10 +47,10 @@ export function error(err) {
 export const getData = async () => {
   try {
     const { data } = await axios.get(apiURL, {
-      headers: {
-        "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
-        Origin: "X-Requested-With",
-      },
+//       headers: {
+//         "X-Auth-Token": "578ac68774834c4a82e28093ac0183a6",
+//         Origin: "X-Requested-With",
+//       },
     });
     console.log(data);
     apiData = data;
